@@ -46,6 +46,18 @@ class Location:
     name_ascii: typing.Optional[str] = None
     position: typing.Optional[typing.Tuple[decimal.Decimal, decimal.Decimal]] = None
     free_text: typing.Optional[str] = None
+    subsidiary_locations: typing.List["SubsidiaryLocation"] = dataclasses.field(default_factory=list)
+
+
+@dataclasses.dataclass
+class SubsidiaryLocation:
+    location_code: str
+    type_code: str
+    name: str
+    created: datetime.datetime
+    last_modified: datetime.datetime
+    allocation_company: str
+    infrastructure_manager: typing.Optional[str] = None
 
 
 @dataclasses.dataclass
@@ -172,6 +184,46 @@ def load_era_primary_locations(path: pathlib.Path):
             free_text=(location.free_text.value or None) if location.free_text else None,
         )
 
+def load_era_subsidiary_locations(path: pathlib.Path, locations: typing.List[Location]):
+    locations_map = {loc.plc: loc for loc in locations}
+
+    parser = xsdata.formats.dataclass.parsers.XmlParser(
+        config=xsdata.formats.dataclass.parsers.config.ParserConfig(
+            fail_on_unknown_properties=True
+        )
+    )
+    sub_locs = parser.parse(path, models.crd.SubsidiaryLocations).subsidiary_location
+    today = datetime.date.today()
+    for sub_loc in sub_locs:
+        if not sub_loc.active_flag.value:
+            continue
+
+        location_code = int(sub_loc.location_code.value)
+        start_validity = datetime.date.fromisoformat(sub_loc.start_validity.value)
+        end_validity = datetime.date.fromisoformat(sub_loc.end_validity.value) if sub_loc.end_validity else None
+        if start_validity > today:
+            continue
+        if end_validity and end_validity < today:
+            continue
+
+        created = datetime.date.fromisoformat(sub_loc.add_date.value)
+        last_modified = datetime.date.fromisoformat(sub_loc.modified_date.value) if sub_loc.modified_date else created
+
+        location = locations_map.get(f"{sub_loc.country_iso_code.value}{location_code}")
+        if location is None:
+            continue
+
+        location.subsidiary_locations.append(SubsidiaryLocation(
+            location_code=sub_loc.subsidiary_location_code.value,
+            type_code=sub_loc.subsidiary_type_code.value,
+            name=sub_loc.subsidiary_location_name.value,
+            created=datetime.datetime.combine(created, datetime.time.min, tzinfo=datetime.UTC),
+            last_modified=datetime.datetime.combine(last_modified, datetime.time.min, tzinfo=datetime.UTC),
+            allocation_company=sub_loc.allocation_company.value,
+            infrastructure_manager=sub_loc.responsible_im_code.value if sub_loc.responsible_im_code else None,
+        ))
+
+
 @dataclasses.dataclass
 class DbNetex:
     stop_places: typing.List[models.netex.StopPlace]
@@ -219,14 +271,16 @@ def match_db_stop_places(
 
     best = {}
     for location in locations:
-        if location.infrastructure_manager not in DB_INFRASTRUCTURE_MANAGERS or not location.free_text:
+        if location.infrastructure_manager not in DB_INFRASTRUCTURE_MANAGERS:
             continue
-        match = db_by_ril.get(location.free_text.strip())
-        if match is None:
-            continue
-        db_stop_place, rank = match
-        if db_stop_place.id not in best or rank < best[db_stop_place.id][0]:
-            best[db_stop_place.id] = (rank, location.plc, db_stop_place)
+        ril_codes = map(lambda s: s.location_code, filter(lambda s: s.type_code == "41", location.subsidiary_locations))
+        for ril_code in ril_codes:
+            match = db_by_ril.get(ril_code)
+            if match is None:
+                continue
+            db_stop_place, rank = match
+            if db_stop_place.id not in best or rank < best[db_stop_place.id][0]:
+                best[db_stop_place.id] = (rank, location.plc, db_stop_place)
     return {plc: db_stop_place for _, plc, db_stop_place in best.values()}
 
 
@@ -445,16 +499,21 @@ def retarget_refs(obj, old_ref: str, new_ref: str):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--company", type=pathlib.Path, help="Company XML export from the RNE CRD", required=True)
-    parser.add_argument("--plc", type=pathlib.Path, help="PrimaryLocations XML export from the RNE CRD", required=True)
+    parser.add_argument("--plc", type=pathlib.Path, help="PrimaryLocation XML export from the RNE CRD", required=True)
+    parser.add_argument("--sub_loc", type=pathlib.Path, help="SubsidiaryLocation XML export from the RNE CRD", required=True)
     parser.add_argument("--output", type=pathlib.Path, help="Output file", required=True)
     args = parser.parse_args()
+
+    companies = list(load_era_companies(args.company))
+    locations = list(load_era_primary_locations(args.plc))
+    load_era_subsidiary_locations(args.sub_loc, locations)
 
     db = load_db_netex()
 
     with open(args.output, "w", encoding="utf8") as f:
         make_netex_delivery(
-            companies=load_era_companies(args.company),
-            locations=load_era_primary_locations(args.plc),
+            companies=companies,
+            locations=locations,
             db=db,
             out=f
         )

@@ -44,6 +44,20 @@ class Address:
 
 
 @dataclass(kw_only=True)
+class AllocationCompany:
+    class Meta:
+        namespace = "http://ws.refdata.crd.cc.uic.org/replication/schemas"
+
+    value: str = field(
+        default="",
+        metadata={
+            "min_length": 4,
+            "max_length": 4,
+        },
+    )
+
+
+@dataclass(kw_only=True)
 class CentralEntityFlag:
     class Meta:
         name = "Central_Entity_Flag"
@@ -550,6 +564,23 @@ class ResponsibleIm:
 
 
 @dataclass(kw_only=True)
+class ResponsibleImCode:
+    class Meta:
+        name = "Responsible_IM_Code"
+        nillable = True
+        namespace = "http://ws.refdata.crd.cc.uic.org/replication/schemas"
+
+    value: None | str = field(
+        default="",
+        metadata={
+            "min_length": 4,
+            "max_length": 4,
+            "nillable": True,
+        },
+    )
+
+
+@dataclass(kw_only=True)
 class StartValidity:
     class Meta:
         name = "Start_Validity"
@@ -559,6 +590,50 @@ class StartValidity:
         default="",
         metadata={
             "pattern": r"\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])",
+        },
+    )
+
+
+@dataclass(kw_only=True)
+class SubsidiaryLocationCode:
+    class Meta:
+        name = "Subsidiary_Location_Code"
+        namespace = "http://ws.refdata.crd.cc.uic.org/replication/schemas"
+
+    value: str = field(
+        default="",
+        metadata={
+            "min_length": 1,
+            "max_length": 10,
+        },
+    )
+
+
+@dataclass(kw_only=True)
+class SubsidiaryLocationName:
+    class Meta:
+        name = "Subsidiary_Location_Name"
+        namespace = "http://ws.refdata.crd.cc.uic.org/replication/schemas"
+
+    value: str = field(
+        default="",
+        metadata={
+            "min_length": 0,
+            "max_length": 255,
+        },
+    )
+
+
+@dataclass(kw_only=True)
+class SubsidiaryTypeCode:
+    class Meta:
+        name = "Subsidiary_Type_Code"
+        namespace = "http://ws.refdata.crd.cc.uic.org/replication/schemas"
+
+    value: str = field(
+        default="",
+        metadata={
+            "max_length": 2,
         },
     )
 
@@ -901,6 +976,128 @@ class PrimaryLocations:
             default=None,
             metadata={
                 "name": "Longitude",
+                "type": "Element",
+                "nillable": True,
+            },
+        )
+        active_flag: ActiveFlag = field(
+            metadata={
+                "name": "Active_Flag",
+                "type": "Element",
+            }
+        )
+        add_date: AddDate = field(
+            metadata={
+                "name": "Add_Date",
+                "type": "Element",
+            }
+        )
+        modified_date: None | ModifiedDate = field(
+            default=None,
+            metadata={
+                "name": "Modified_Date",
+                "type": "Element",
+            },
+        )
+
+
+@dataclass(kw_only=True)
+class SubsidiaryLocations:
+    """
+    :ivar subsidiary_location: Subsidiary Type information
+    """
+
+    class Meta:
+        namespace = "http://ws.refdata.crd.cc.uic.org/replication/schemas"
+
+    subsidiary_location: list[SubsidiaryLocations.SubsidiaryLocation] = field(
+        default_factory=list,
+        metadata={
+            "name": "Subsidiary_Location",
+            "type": "Element",
+        },
+    )
+
+    @dataclass(kw_only=True)
+    class SubsidiaryLocation:
+        country_iso_code: None | CountryIsoCode2 = field(
+            default=None,
+            metadata={
+                "name": "Country_Iso_Code",
+                "type": "Element",
+            },
+        )
+        responsible_im_code: None | ResponsibleImCode = field(
+            default=None,
+            metadata={
+                "name": "Responsible_IM_Code",
+                "type": "Element",
+                "nillable": True,
+            },
+        )
+        subsidiary_location_code: SubsidiaryLocationCode = field(
+            metadata={
+                "name": "Subsidiary_Location_Code",
+                "type": "Element",
+            }
+        )
+        location_code: LocationCode = field(
+            metadata={
+                "name": "Location_Code",
+                "type": "Element",
+            }
+        )
+        subsidiary_type_code: SubsidiaryTypeCode = field(
+            metadata={
+                "name": "Subsidiary_Type_Code",
+                "type": "Element",
+            }
+        )
+        subsidiary_location_name: SubsidiaryLocationName = field(
+            metadata={
+                "name": "Subsidiary_Location_Name",
+                "type": "Element",
+            }
+        )
+        start_validity: StartValidity = field(
+            metadata={
+                "name": "Start_Validity",
+                "type": "Element",
+            }
+        )
+        end_validity: None | EndValidity = field(
+            default=None,
+            metadata={
+                "name": "End_Validity",
+                "type": "Element",
+            },
+        )
+        allocation_company: AllocationCompany = field(
+            metadata={
+                "name": "AllocationCompany",
+                "type": "Element",
+            }
+        )
+        latitude: None | Latitude = field(
+            default=None,
+            metadata={
+                "name": "Latitude",
+                "type": "Element",
+                "nillable": True,
+            },
+        )
+        longitude: None | Longitude = field(
+            default=None,
+            metadata={
+                "name": "Longitude",
+                "type": "Element",
+                "nillable": True,
+            },
+        )
+        free_text: None | FreeText = field(
+            default=None,
+            metadata={
+                "name": "Free_Text",
                 "type": "Element",
                 "nillable": True,
             },

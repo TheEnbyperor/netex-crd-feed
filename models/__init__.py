@@ -2,6 +2,7 @@ from models.crd import (
     ActiveFlag,
     AddDate,
     Address,
+    AllocationCompany,
     CentralEntityFlag,
     City,
     Companies,
@@ -42,13 +43,19 @@ from models.crd import (
     PostalCode,
     PrimaryLocations,
     ResponsibleIm,
+    ResponsibleImCode,
     StartValidity,
+    SubsidiaryLocationCode,
+    SubsidiaryLocationName,
+    SubsidiaryLocations,
+    SubsidiaryTypeCode,
 )
 
 __all__ = [
     "ActiveFlag",
     "AddDate",
     "Address",
+    "AllocationCompany",
     "CentralEntityFlag",
     "City",
     "Companies",
@@ -89,5 +96,10 @@ __all__ = [
     "PostalCode",
     "PrimaryLocations",
     "ResponsibleIm",
+    "ResponsibleImCode",
     "StartValidity",
+    "SubsidiaryLocations",
+    "SubsidiaryLocationCode",
+    "SubsidiaryLocationName",
+    "SubsidiaryTypeCode",
 ]

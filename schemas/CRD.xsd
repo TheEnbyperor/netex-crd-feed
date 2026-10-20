@@ -218,4 +218,44 @@
       <xs:minLength value="0"/>
     </xs:restriction>
   </xs:simpleType>
+  <xs:element name="SubsidiaryLocations">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Subsidiary_Location" maxOccurs="unbounded" minOccurs="0">
+          <xs:annotation>
+            <xs:documentation>Subsidiary Type information</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element ref="Country_Iso_Code" minOccurs="0"/>
+              <xs:element ref="Responsible_IM_Code" minOccurs="0"/>
+              <xs:element ref="Subsidiary_Location_Code"/>
+              <xs:element ref="Location_Code"/>
+              <xs:element ref="Subsidiary_Type_Code"/>
+              <xs:element ref="Subsidiary_Location_Name"/>
+              <xs:element ref="Start_Validity"/>
+              <xs:element ref="End_Validity" minOccurs="0"/>
+              <xs:element ref="AllocationCompany"/>
+              <xs:element ref="Latitude" minOccurs="0"/>
+              <xs:element ref="Longitude" minOccurs="0"/>
+              <xs:element ref="Free_Text" minOccurs="0"/>
+              <xs:element ref="Active_Flag"/>
+              <xs:element ref="Add_Date"/>
+              <xs:element ref="Modified_Date" minOccurs="0"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Subsidiary_Location_Code" type="String1-10"/>
+  <xs:element name="Subsidiary_Location_Name" type="String-255"/>
+  <xs:element name="Subsidiary_Type_Code" type="String-2"/>
+  <xs:element name="Responsible_IM_Code" type="CompanyCode" nillable="true"/>
+  <xs:element name="AllocationCompany" type="CompanyCode"/>
+  <xs:simpleType name="String-2">
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="2"/>
+    </xs:restriction>
+  </xs:simpleType>
 </xs:schema>

@@ -1,2 +1,3 @@
 .venv/
 crd-data/
+__pycache__
