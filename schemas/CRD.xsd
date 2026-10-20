@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://ws.refdata.crd.cc.uic.org/replication/schemas"
+           elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://ws.refdata.crd.cc.uic.org/replication/schemas">
+  <xs:element name="PrimaryLocations">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Primary_Location" maxOccurs="unbounded" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element ref="Country_Iso_Code"/>
+              <xs:element ref="Location_Code"/>
+              <xs:element ref="Start_Validity"/>
+              <xs:element ref="End_Validity" minOccurs="0"/>
+              <xs:element ref="ResponsibleIM"/>
+              <xs:element ref="Location_Name"/>
+              <xs:element ref="Location_Name_ASCII"/>
+              <xs:element ref="NUTS_Code" minOccurs="0"/>
+              <xs:element ref="Container_Handling_Flag" minOccurs="0"/>
+              <xs:element ref="Handover_Point_Flag" minOccurs="0"/>
+              <xs:element ref="Freight_Possible_Flag" minOccurs="0"/>
+              <xs:element ref="Freight_Start_Validity" minOccurs="0"/>
+              <xs:element ref="Freight_End_Validity" minOccurs="0"/>
+              <xs:element ref="Passenger_Possible_Flag" minOccurs="0"/>
+              <xs:element ref="Passenger_Start_Validity" minOccurs="0"/>
+              <xs:element ref="Passenger_End_Validity" minOccurs="0"/>
+              <xs:element ref="Free_Text" minOccurs="0"/>
+              <xs:element ref="Latitude" minOccurs="0"/>
+              <xs:element ref="Longitude" minOccurs="0"/>
+              <xs:element ref="Active_Flag"/>
+              <xs:element ref="Add_Date"/>
+              <xs:element ref="Modified_Date" minOccurs="0"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Country_Iso_Code">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="CountryIdentIso"/>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Location_Name" type="String-255"/>
+  <xs:element name="Location_Name_ASCII" type="String-255"/>
+  <xs:element name="NUTS_Code" nillable="true" type="String5"/>
+  <xs:simpleType name="CountryIdentIso">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="2"/>
+      <xs:maxLength value="2"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="Container_Handling_Flag" type="xs:boolean"/>
+  <xs:element name="Handover_Point_Flag" type="xs:boolean"/>
+  <xs:element name="Freight_Possible_Flag" type="xs:boolean"/>
+  <xs:element name="Passenger_Possible_Flag" type="xs:boolean"/>
+  <xs:element name="Active_Flag" type="xs:boolean"/>
+  <xs:element name="Passenger_Start_Validity" type="Date"/>
+  <xs:element name="Passenger_End_Validity" type="Date"/>
+  <xs:element name="Freight_Start_Validity" type="Date"/>
+  <xs:element name="Freight_End_Validity" type="Date"/>
+  <xs:element name="Add_Date" type="Date"/>
+  <xs:element name="Modified_Date" type="Date"/>
+  <xs:element name="Start_Validity" type="Date"/>
+  <xs:element name="End_Validity" type="Date"/>
+  <xs:element name="Free_Text" nillable="true" type="String-255"/>
+  <xs:element name="Longitude" nillable="true" type="Decimal9-6"/>
+  <xs:element name="Latitude" nillable="true" type="Decimal8-6"/>
+  <xs:element name="ResponsibleIM" type="CompanyCode"/>
+  <xs:simpleType name="CompanyCode">
+    <xs:restriction base="String4-4"/>
+  </xs:simpleType>
+  <xs:element name="Location_Code" type="String1-5"/>
+  <xs:simpleType name="String1-5">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1"/>
+      <xs:maxLength value="5"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="String4-4">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="4"/>
+      <xs:maxLength value="4"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="String1-10">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1"/>
+      <xs:maxLength value="10"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="Decimal8-6">
+    <xs:restriction base="xs:decimal">
+      <xs:totalDigits value="14"/>
+      <xs:fractionDigits value="6"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="Decimal9-6">
+    <xs:restriction base="xs:decimal">
+      <xs:totalDigits value="15"/>
+      <xs:fractionDigits value="6"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="String-255">
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="255"/>
+      <xs:minLength value="0"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="String5">
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="5"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="Date">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="Companies">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Company" maxOccurs="unbounded" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element ref="Company_Name"/>
+              <xs:element ref="Company_Name_ASCII" minOccurs="0"/>
+              <xs:element ref="Company_UIC_Code"/>
+              <xs:element ref="Company_URL" minOccurs="0"/>
+              <xs:element ref="Country_ISO_Code"/>
+              <xs:element ref="Start_Validity"/>
+              <xs:element ref="End_Validity" minOccurs="0"/>
+              <xs:element ref="Company_Short_Name"/>
+              <xs:element ref="Free_Text" minOccurs="0"/>
+              <xs:element name="Contact_Details">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element ref="Contact_Person"/>
+                    <xs:element ref="Email" minOccurs="0"/>
+                    <xs:element ref="Phone_Number" minOccurs="0"/>
+                    <xs:element ref="FAX_Number" minOccurs="0"/>
+                    <xs:element ref="Address" minOccurs="0"/>
+                    <xs:element ref="City" minOccurs="0"/>
+                    <xs:element ref="Mobile_Number" minOccurs="0"/>
+                    <xs:element ref="Postal_Code" minOccurs="0"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element ref="Passenger_RU_Flag"/>
+              <xs:element ref="Freight_RU_Flag"/>
+              <xs:element ref="Infrastructure_Flag"/>
+              <xs:element ref="Other_Company_flag"/>
+              <xs:element ref="National_Entity_Flag"/>
+              <xs:element ref="Central_Entity_Flag"/>
+              <xs:element ref="Active_Flag"/>
+              <xs:element ref="Add_Date"/>
+              <xs:element ref="Modified_Date" minOccurs="0"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Company_Name" type="String1-255"/>
+  <xs:element name="Company_Name_ASCII" type="String1-255"/>
+  <xs:element name="Company_UIC_Code" type="String4-4"/>
+  <xs:element name="Company_URL" type="String-100"/>
+  <xs:element name="Country_ISO_Code">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="CountryIdentIso"/>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Company_Short_Name" type="String-50"/>
+  <xs:element name="Contact_Person" type="String1-255"/>
+  <xs:element nillable="true" name="Email" type="String-70"/>
+  <xs:element name="Phone_Number" type="String-70"/>
+  <xs:element name="FAX_Number" type="String-70"/>
+  <xs:element name="Address" type="String1-255"/>
+  <xs:element name="City" type="String-50"/>
+  <xs:element name="Mobile_Number" type="String-70"/>
+  <xs:element name="Postal_Code" type="String-10"/>
+  <xs:element name="Passenger_RU_Flag" type="xs:boolean"/>
+  <xs:element name="Freight_RU_Flag" type="xs:boolean"/>
+  <xs:element name="Infrastructure_Flag" type="xs:boolean"/>
+  <xs:element name="Other_Company_flag" type="xs:boolean"/>
+  <xs:element name="Central_Entity_Flag" type="xs:boolean"/>
+  <xs:element name="National_Entity_Flag" type="xs:boolean"/>
+  <xs:simpleType name="String-10">
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="10"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="String-70">
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="70"/>
+      <xs:minLength value="0"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="String-50">
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="50"/>
+      <xs:minLength value="0"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="String1-255">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1"/>
+      <xs:maxLength value="255"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="String-100">
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="100"/>
+      <xs:minLength value="0"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>
